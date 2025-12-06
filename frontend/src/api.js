@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: 'http://localhost:8080/api',
+    baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api',
 });
 
 // Add a request interceptor to add the JWT token to headers
@@ -12,7 +12,7 @@ api.interceptors.request.use(
             console.log("API Interceptor - Skipping auth header for public booking endpoint");
             return config;
         }
-        
+
         // We stick to 'token' to maintain compatibility with existing Login/Navbar components
         const token = localStorage.getItem('token');
 
