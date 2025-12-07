@@ -12,6 +12,11 @@ public class BlueLagoonHotelApplication {
     }
 
     @org.springframework.context.annotation.Bean
+    public org.springframework.web.client.RestTemplate restTemplate() {
+        return new org.springframework.web.client.RestTemplate();
+    }
+
+    @org.springframework.context.annotation.Bean
     public org.springframework.boot.CommandLineRunner commandLineRunner(
             com.bluelagoon.hotel.repository.BookingRepository bookingRepository) {
         return args -> {

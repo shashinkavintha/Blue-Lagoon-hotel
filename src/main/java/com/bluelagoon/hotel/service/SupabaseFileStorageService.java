@@ -1,6 +1,5 @@
 package com.bluelagoon.hotel.service;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
@@ -15,19 +14,28 @@ import java.util.UUID;
 
 @Service
 @Primary
-@RequiredArgsConstructor
 public class SupabaseFileStorageService implements FileStorageService {
 
-    @Value("${supabase.url}")
-    private String supabaseUrl;
+    private final String supabaseUrl;
+    private final String supabaseKey;
+    private final String bucketName;
+    private final RestTemplate restTemplate;
 
-    @Value("${supabase.key}")
-    private String supabaseKey;
+    public SupabaseFileStorageService(
+            @Value("${supabase.url}") String supabaseUrl,
+            @Value("${supabase.key}") String supabaseKey,
+            @Value("${supabase.bucket}") String bucketName,
+            RestTemplate restTemplate) {
+        this.supabaseUrl = supabaseUrl;
+        this.supabaseKey = supabaseKey;
+        this.bucketName = bucketName;
+        this.restTemplate = restTemplate;
 
-    @Value("${supabase.bucket}")
-    private String bucketName;
-
-    private final RestTemplate restTemplate = new RestTemplate();
+        System.out.println(">>> CHECKING SUPABASE CONFIG >>>");
+        System.out.println("URL: " + (supabaseUrl != null && !supabaseUrl.isEmpty() ? "SET" : "MISSING"));
+        System.out.println("KEY: " + (supabaseKey != null && !supabaseKey.isEmpty() ? "SET" : "MISSING"));
+        System.out.println("BUCKET: " + bucketName);
+    }
 
     @Override
     public String saveFile(MultipartFile file) {
