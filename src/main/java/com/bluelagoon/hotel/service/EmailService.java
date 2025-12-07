@@ -13,6 +13,10 @@ public class EmailService {
 
     @org.springframework.scheduling.annotation.Async
     public void sendBookingNotification(String toEmail, String subject, String body) {
+        System.out.println(">>> STARTING EMAIL SEND PROCESS >>>");
+        System.out.println("To: " + toEmail);
+        System.out.println("Subject: " + subject);
+
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom("shashinkavintha@gmail.com");
@@ -20,16 +24,13 @@ public class EmailService {
             message.setText(body);
             message.setSubject(subject);
 
-            System.out.println("!!! ATTEMPTING TO SEND EMAIL !!!");
-            System.out.println("FROM: " + message.getFrom());
-            System.out.println("TO: " + toEmail);
-
             mailSender.send(message);
 
-            System.out.println("!!! EMAIL SENT SUCCESSFULLY !!! check inbox/spam");
+            System.out.println(">>> EMAIL SENT SUCCESSFULLY to " + toEmail + " >>>");
         } catch (Exception e) {
             System.err.println("!!! EMAIL SENDING FAILED !!!");
-            e.printStackTrace(); // Print full stack trace to console
+            System.err.println("Error: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }
