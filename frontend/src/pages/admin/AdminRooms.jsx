@@ -44,13 +44,16 @@ const AdminRooms = () => {
             }
 
             if (selectedFiles && selectedFiles.length > 0) {
-                for (let i = 0; i < selectedFiles.length; i++) {
+                // Upload files in parallel for better performance
+                const uploadPromises = selectedFiles.map(file => {
                     const form = new FormData();
-                    form.append('file', selectedFiles[i]);
-                    await api.post(`/rooms/${roomId}/photo`, form, {
+                    form.append('file', file);
+                    return api.post(`/rooms/${roomId}/photo`, form, {
                         headers: { 'Content-Type': 'multipart/form-data' }
                     });
-                }
+                });
+
+                await Promise.all(uploadPromises);
             }
 
             setIsModalOpen(false);
