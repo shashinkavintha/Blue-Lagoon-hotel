@@ -29,7 +29,13 @@ public class BookingService {
 
     @Transactional
     public Booking createBooking(Long userId, BookingRequest request) {
-        Room room = roomRepository.findByIdWithLock(request.getRoomId())
+        // 1. Validate User ID presence
+        if (userId == null) {
+            throw new RuntimeException("User ID is missing in the request. Please re-login.");
+        }
+
+        // 2. Use standard findById (Safe Mode - removed Lock)
+        Room room = roomRepository.findById(request.getRoomId())
                 .orElseThrow(() -> new RuntimeException("Room not found"));
 
         User user = userRepository.findById(userId)
@@ -61,22 +67,11 @@ public class BookingService {
         Booking savedBooking = bookingRepository.save(booking);
         System.out.println("!!! DB PERSISTENCE CHECK !!! Saved Booking ID=" + savedBooking.getId());
 
-        // Send Email Notification to Admin (Comprehensive)
-        String phoneNumber = user.getPhoneNumber() != null ? user.getPhoneNumber() : "Not Provided";
-        String emailBody = "NEW BOOKING ALERT\n\n" +
-                "User Details:\n" +
-                "Name: " + user.getName() + "\n" +
-                "Email: " + user.getEmail() + "\n" +
-                "Phone: " + phoneNumber + "\n\n" +
-                "Booking Details:\n" +
-                "Booking Code: " + savedBooking.getBookingCode() + "\n" +
-                "Room Type: " + room.getRoomType() + "\n" +
-                "Check-In: " + savedBooking.getCheckInDate() + "\n" +
-                "Check-Out: " + savedBooking.getCheckOutDate() + "\n" +
-                "Total Price: $" + savedBooking.getTotalPrice();
-
-        emailService.sendBookingNotification("shashinkavintha@gmail.com",
-                "New Reservation: " + savedBooking.getBookingCode(), emailBody);
+        // 3. Disable Email temporarily (Safe Mode)
+        // String phoneNumber = user.getPhoneNumber() != null ? user.getPhoneNumber() :
+        // "Not Provided";
+        // String emailBody = ...
+        // emailService.sendBookingNotification(...)
 
         return savedBooking;
     }
