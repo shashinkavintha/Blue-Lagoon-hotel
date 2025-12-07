@@ -33,18 +33,24 @@ public class PublicController {
     }
 
     @Autowired
-    private com.bluelagoon.hotel.service.EmailService emailService;
+    private org.springframework.mail.javamail.JavaMailSender mailSender;
 
     @GetMapping("/test-email")
     public ResponseEntity<String> testEmail(@RequestParam(required = false) String to) {
         try {
             String recipient = (to != null && !to.isEmpty()) ? to : "shashinkavintha@gmail.com";
-            emailService.sendBookingNotification(recipient, "Test Email from Blue Lagoon",
-                    "If you see this, email is working!");
-            return ResponseEntity.ok("Email Sent Successfully to " + recipient);
+
+            org.springframework.mail.SimpleMailMessage message = new org.springframework.mail.SimpleMailMessage();
+            message.setTo(recipient);
+            message.setSubject("Test Email from Blue Lagoon (Sync)");
+            message.setText("If you see this, email is working! Sent synchronously.");
+
+            mailSender.send(message);
+
+            return ResponseEntity.ok("SYNC Email Sent Successfully to " + recipient);
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.internalServerError().body("Email Failed: " + e.getMessage());
+            return ResponseEntity.internalServerError().body("SYNC Email Failed: " + e.getMessage());
         }
     }
 
