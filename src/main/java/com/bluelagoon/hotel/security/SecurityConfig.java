@@ -41,6 +41,7 @@ public class SecurityConfig {
                     req.requestMatchers("/uploads/**").permitAll();
                     req.requestMatchers("/api/rooms/search/**").permitAll();
                     req.requestMatchers("/api/test-email").permitAll();
+                    req.requestMatchers("/api/db-test").permitAll();
                     req.requestMatchers("/api/bookings/**").permitAll();
                     req.requestMatchers("/api/bookings/user/**").permitAll(); // Allow public retrieval
                     req.requestMatchers("/error").permitAll(); // Allow error page to be shown
