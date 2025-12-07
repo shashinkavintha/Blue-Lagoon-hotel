@@ -22,9 +22,9 @@ public class SupabaseFileStorageService implements FileStorageService {
     private final RestTemplate restTemplate;
 
     public SupabaseFileStorageService(
-            @Value("${supabase.url}") String supabaseUrl,
-            @Value("${supabase.key}") String supabaseKey,
-            @Value("${supabase.bucket}") String bucketName,
+            @Value("${supabase.url:}") String supabaseUrl,
+            @Value("${supabase.key:}") String supabaseKey,
+            @Value("${supabase.bucket:}") String bucketName,
             RestTemplate restTemplate) {
         this.supabaseUrl = supabaseUrl;
         this.supabaseKey = supabaseKey;
@@ -32,9 +32,20 @@ public class SupabaseFileStorageService implements FileStorageService {
         this.restTemplate = restTemplate;
 
         System.out.println(">>> CHECKING SUPABASE CONFIG >>>");
-        System.out.println("URL: " + (supabaseUrl != null && !supabaseUrl.isEmpty() ? "SET" : "MISSING"));
-        System.out.println("KEY: " + (supabaseKey != null && !supabaseKey.isEmpty() ? "SET" : "MISSING"));
-        System.out.println("BUCKET: " + bucketName);
+        if (supabaseUrl == null || supabaseUrl.isEmpty())
+            System.err.println("!!! MISSING CONFIG: supabase.url (SUPABASE_URL) !!!");
+        else
+            System.out.println("URL: SET");
+
+        if (supabaseKey == null || supabaseKey.isEmpty())
+            System.err.println("!!! MISSING CONFIG: supabase.key (SUPABASE_KEY) !!!");
+        else
+            System.out.println("KEY: SET");
+
+        if (bucketName == null || bucketName.isEmpty())
+            System.err.println("!!! MISSING CONFIG: supabase.bucket (defaults to 'rooms') !!!");
+        else
+            System.out.println("BUCKET: " + bucketName);
     }
 
     @Override
