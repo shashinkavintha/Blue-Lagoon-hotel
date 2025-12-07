@@ -42,8 +42,10 @@ public class PublicController {
 
             org.springframework.mail.SimpleMailMessage message = new org.springframework.mail.SimpleMailMessage();
             message.setTo(recipient);
+            message.setFrom("shashinkavintha@gmail.com");
             message.setSubject("Test Email from Blue Lagoon (Sync)");
-            message.setText("If you see this, email is working! Sent synchronously.");
+            message.setText(
+                    "If you see this, email is working! Sent synchronously and explicitly from shashinkavintha@gmail.com.");
 
             mailSender.send(message);
 
