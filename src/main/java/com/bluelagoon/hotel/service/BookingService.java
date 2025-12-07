@@ -67,11 +67,26 @@ public class BookingService {
         Booking savedBooking = bookingRepository.save(booking);
         System.out.println("!!! DB PERSISTENCE CHECK !!! Saved Booking ID=" + savedBooking.getId());
 
-        // 3. Disable Email temporarily (Safe Mode)
-        // String phoneNumber = user.getPhoneNumber() != null ? user.getPhoneNumber() :
-        // "Not Provided";
-        // String emailBody = ...
-        // emailService.sendBookingNotification(...)
+        // 3. Email Notification (Now Async - Won't block or crash booking)
+        try {
+            String phoneNumber = user.getPhoneNumber() != null ? user.getPhoneNumber() : "Not Provided";
+            String emailBody = "NEW BOOKING ALERT\n\n" +
+                    "User Details:\n" +
+                    "Name: " + user.getName() + "\n" +
+                    "Email: " + user.getEmail() + "\n" +
+                    "Phone: " + phoneNumber + "\n\n" +
+                    "Booking Details:\n" +
+                    "Booking Code: " + savedBooking.getBookingCode() + "\n" +
+                    "Room Type: " + room.getRoomType() + "\n" +
+                    "Check-In: " + savedBooking.getCheckInDate() + "\n" +
+                    "Check-Out: " + savedBooking.getCheckOutDate() + "\n" +
+                    "Total Price: $" + savedBooking.getTotalPrice();
+
+            emailService.sendBookingNotification("shashinkavintha@gmail.com",
+                    "New Reservation: " + savedBooking.getBookingCode(), emailBody);
+        } catch (Exception e) {
+            System.err.println("!!! ASYNC EMAIL INITIATION FAILED (Should not happen) !!! " + e.getMessage());
+        }
 
         return savedBooking;
     }
