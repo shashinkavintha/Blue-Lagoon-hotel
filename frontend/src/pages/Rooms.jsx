@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api';
 import { Link } from 'react-router-dom';
-import { Search } from 'lucide-react';
+import { Search, AlertCircle } from 'lucide-react';
 
 const Rooms = () => {
     const [rooms, setRooms] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [filters, setFilters] = useState({
         roomType: '',
         minPrice: '',
@@ -19,6 +20,7 @@ const Rooms = () => {
 
     const fetchRooms = async () => {
         setLoading(true);
+        setError(null);
         try {
             const params = {};
             if (filters.roomType) params.roomType = filters.roomType;
@@ -30,6 +32,7 @@ const Rooms = () => {
             setRooms(response.data);
         } catch (error) {
             console.error("Error fetching rooms", error);
+            setError("Failed to load rooms. Please try again later.");
         } finally {
             setLoading(false);
         }
@@ -61,7 +64,6 @@ const Rooms = () => {
                 {/* Search Bar */}
                 <div className="bg-white p-6 rounded-lg shadow-md mb-8">
                     <form onSubmit={handleSearch} className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                        {/* ... existing form fields ... */}
                         <div>
                             <label className="block text-sm font-medium text-gray-700">Type</label>
                             <select
@@ -121,11 +123,24 @@ const Rooms = () => {
                     </form>
                 </div>
 
+                {/* Error Message */}
+                {error && (
+                    <div className="mb-8 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 flex items-center">
+                        <AlertCircle className="mr-2" size={24} />
+                        <p>{error}</p>
+                    </div>
+                )}
+
                 {/* Rooms Grid */}
                 {loading ? (
-                    <div className="text-center">Loading...</div>
-                ) : rooms.length === 0 ? (
-                    <div className="text-center text-gray-500">No rooms found matching your criteria.</div>
+                    <div className="flex justify-center items-center h-64">
+                        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
+                    </div>
+                ) : !error && rooms.length === 0 ? (
+                    <div className="text-center py-12">
+                        <p className="text-gray-500 text-lg mb-2">No rooms found matching your criteria.</p>
+                        <p className="text-gray-400">Try adjusting your filters or search for something else.</p>
+                    </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         {rooms.map((room) => (
