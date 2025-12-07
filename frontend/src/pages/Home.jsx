@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import bgImage from '../assets/bg.png'; // Make sure this path corresponds to where I copied the image
+import bgImage from '../assets/bg.jpg'; // Pool image for homepage background
 
 import { motion } from 'framer-motion';
 
