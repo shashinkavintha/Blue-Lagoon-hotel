@@ -112,7 +112,9 @@ const RoomDetails = () => {
         if (!url) return null;
         if (url.startsWith('http')) return url;
         const filename = url.split('/').pop();
-        return `http://localhost:8080/uploads/${filename}`;
+        const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
+        const BASE_URL = API_BASE_URL.replace('/api', '');
+        return `${BASE_URL}/uploads/${filename}`;
     };
 
     if (loading) return <div className="text-center py-20">Loading...</div>;
