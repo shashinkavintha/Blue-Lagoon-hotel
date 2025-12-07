@@ -13,4 +13,9 @@ public class BookingRequest {
     private Integer numOfChildren;
     private String specialRequests;
     private Long userId; // For temporary auth bypass
+
+    // Guest contact fields (for booking on behalf of someone)
+    private String guestName;
+    private String guestEmail;
+    private String guestPhone;
 }

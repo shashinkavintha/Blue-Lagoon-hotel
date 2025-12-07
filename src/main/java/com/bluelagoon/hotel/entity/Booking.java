@@ -58,4 +58,14 @@ public class Booking {
 
     @Column(name = "payment_intent_id")
     private String paymentIntentId;
+
+    // Guest contact fields (for booking on behalf of someone)
+    @Column(name = "guest_name")
+    private String guestName;
+
+    @Column(name = "guest_email")
+    private String guestEmail;
+
+    @Column(name = "guest_phone")
+    private String guestPhone;
 }

@@ -16,6 +16,11 @@ const RoomDetails = () => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [isBooking, setIsBooking] = useState(false);
 
+    // Guest contact fields
+    const [guestName, setGuestName] = useState('');
+    const [guestEmail, setGuestEmail] = useState('');
+    const [guestPhone, setGuestPhone] = useState('');
+
     useEffect(() => {
         fetchRoomDetails();
     }, [id]);
@@ -87,7 +92,11 @@ const RoomDetails = () => {
                 numOfAdults: 1,
                 numOfChildren: 0,
                 specialRequests: '',
-                userId: user.id // Pass the User ID manually for auth bypass
+                userId: user.id,
+                // Guest contact fields
+                guestName: guestName,
+                guestEmail: guestEmail,
+                guestPhone: guestPhone
             };
 
             console.log("Submitting booking:", bookingData);
@@ -217,6 +226,47 @@ const RoomDetails = () => {
                                     />
                                 </div>
                             </div>
+
+                            {/* Guest Contact Fields */}
+                            <div className="mb-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                                <h4 className="text-sm font-bold text-gray-700 mb-3">Guest Contact Details</h4>
+                                <div className="space-y-3">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700">Full Name *</label>
+                                        <input
+                                            type="text"
+                                            value={guestName}
+                                            onChange={(e) => setGuestName(e.target.value)}
+                                            placeholder="Enter guest name"
+                                            className="mt-1 block w-full px-3 py-2 border rounded-md"
+                                            required
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700">Email *</label>
+                                        <input
+                                            type="email"
+                                            value={guestEmail}
+                                            onChange={(e) => setGuestEmail(e.target.value)}
+                                            placeholder="Enter guest email"
+                                            className="mt-1 block w-full px-3 py-2 border rounded-md"
+                                            required
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700">Phone Number *</label>
+                                        <input
+                                            type="tel"
+                                            value={guestPhone}
+                                            onChange={(e) => setGuestPhone(e.target.value)}
+                                            placeholder="Enter phone number"
+                                            className="mt-1 block w-full px-3 py-2 border rounded-md"
+                                            required
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
                             <button
                                 type="submit"
                                 disabled={isBooking}

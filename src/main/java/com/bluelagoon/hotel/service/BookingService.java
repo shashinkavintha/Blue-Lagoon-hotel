@@ -61,7 +61,11 @@ public class BookingService {
                 .specialRequests(request.getSpecialRequests())
                 .totalPrice(totalPrice.doubleValue())
                 .bookingCode(UUID.randomUUID().toString())
-                .status(BookingStatus.CONFIRMED) // Or PENDING if payment is integrated
+                .status(BookingStatus.CONFIRMED)
+                // Guest contact fields
+                .guestName(request.getGuestName())
+                .guestEmail(request.getGuestEmail())
+                .guestPhone(request.getGuestPhone())
                 .build();
 
         Booking savedBooking = bookingRepository.save(booking);
@@ -69,12 +73,23 @@ public class BookingService {
 
         // 3. Email Notification (Now Async - Won't block or crash booking)
         try {
-            String phoneNumber = user.getPhoneNumber() != null ? user.getPhoneNumber() : "Not Provided";
+            // Determine contact info: prefer guest fields, fallback to user
+            String contactName = (request.getGuestName() != null && !request.getGuestName().isEmpty())
+                    ? request.getGuestName()
+                    : user.getName();
+            String contactEmail = (request.getGuestEmail() != null && !request.getGuestEmail().isEmpty())
+                    ? request.getGuestEmail()
+                    : user.getEmail();
+            String contactPhone = (request.getGuestPhone() != null && !request.getGuestPhone().isEmpty())
+                    ? request.getGuestPhone()
+                    : (user.getPhoneNumber() != null ? user.getPhoneNumber() : "Not Provided");
+
             String emailBody = "NEW BOOKING ALERT\n\n" +
-                    "User Details:\n" +
-                    "Name: " + user.getName() + "\n" +
-                    "Email: " + user.getEmail() + "\n" +
-                    "Phone: " + phoneNumber + "\n\n" +
+                    "Booked By User: " + user.getName() + " (" + user.getEmail() + ")\n\n" +
+                    "Guest Contact Details:\n" +
+                    "Name: " + contactName + "\n" +
+                    "Email: " + contactEmail + "\n" +
+                    "Phone: " + contactPhone + "\n\n" +
                     "Booking Details:\n" +
                     "Booking Code: " + savedBooking.getBookingCode() + "\n" +
                     "Room Type: " + room.getRoomType() + "\n" +
