@@ -127,10 +127,10 @@ const RoomDetails = () => {
                 {/* Images Carousel */}
                 <div className="relative h-96 mb-8 rounded-lg overflow-hidden shadow-xl group bg-gray-200">
                     <img
-                        key={currentImageIndex}
                         src={room.photos && room.photos.length > 0 ? getImageUrl(room.photos[currentImageIndex].url) : 'https://via.placeholder.com/600x400?text=No+Image'}
                         alt={room.roomType}
                         className="w-full h-full object-cover transition-all duration-500"
+                        onError={(e) => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/600x400?text=Image+Not+Found'; }}
                     />
 
                     {room.photos && room.photos.length > 1 && (

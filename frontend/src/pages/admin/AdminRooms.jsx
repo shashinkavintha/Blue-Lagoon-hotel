@@ -161,6 +161,7 @@ const AdminRooms = () => {
                                                 : 'https://via.placeholder.com/50'}
                                             alt="Room"
                                             className="h-10 w-10 rounded-full object-cover"
+                                            onError={(e) => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/50?text=NA'; }}
                                         />
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">{room.roomType}</td>

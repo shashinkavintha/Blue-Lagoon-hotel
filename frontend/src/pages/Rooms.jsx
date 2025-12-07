@@ -151,6 +151,7 @@ const Rooms = () => {
                                         : 'https://via.placeholder.com/400x300?text=No+Image'}
                                     alt={room.roomType}
                                     className="w-full h-48 object-cover"
+                                    onError={(e) => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/400x300?text=Image+Not+Found'; }}
                                 />
                                 <div className="p-6">
                                     <div className="flex justify-between items-center mb-2">
