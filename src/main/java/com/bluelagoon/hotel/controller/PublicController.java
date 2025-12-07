@@ -37,22 +37,36 @@ public class PublicController {
 
     @GetMapping("/test-email")
     public ResponseEntity<String> testEmail(@RequestParam(required = false) String to) {
+        StringBuilder debugInfo = new StringBuilder();
         try {
-            String recipient = (to != null && !to.isEmpty()) ? to : "shashinkavintha@gmail.com";
+            // 1. Check System Property
+            String ipv4Flag = System.getProperty("java.net.preferIPv4Stack");
+            debugInfo.append("JVM Flag (preferIPv4Stack): ").append(ipv4Flag).append("\n");
 
+            // 2. Check DNS Resolution
+            java.net.InetAddress[] addresses = java.net.InetAddress.getAllByName("smtp.gmail.com");
+            debugInfo.append("Resolved smtp.gmail.com to: \n");
+            for (java.net.InetAddress addr : addresses) {
+                debugInfo.append(" - ").append(addr.toString()).append("\n");
+            }
+
+            // 3. Attempt Send
+            String recipient = (to != null && !to.isEmpty()) ? to : "shashinkavintha@gmail.com";
             org.springframework.mail.SimpleMailMessage message = new org.springframework.mail.SimpleMailMessage();
             message.setTo(recipient);
             message.setFrom("shashinkavintha@gmail.com");
-            message.setSubject("Test Email from Blue Lagoon (Sync)");
-            message.setText(
-                    "If you see this, email is working! Sent synchronously and explicitly from shashinkavintha@gmail.com.");
+            message.setSubject("Test Email (Diag)");
+            message.setText("Diagnostic email.");
 
             mailSender.send(message);
 
-            return ResponseEntity.ok("SYNC Email Sent Successfully to " + recipient);
+            return ResponseEntity.ok("SUCCESS! Email sent.\n\nDiagnostics:\n" + debugInfo.toString());
+
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.internalServerError().body("SYNC Email Failed: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(
+                    "FAILED. Error: " + e.getMessage() +
+                            "\n\nDiagnostics:\n" + debugInfo.toString());
         }
     }
 
