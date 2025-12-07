@@ -31,12 +31,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests(req -> {
                     // Public endpoints - order matters, most specific first
                     // CRITICAL: POST /api/bookings must be explicitly allowed
-                    req.requestMatchers(new AntPathRequestMatcher("/api/bookings", "POST")).permitAll();
+                    req.requestMatchers("/api/auth/**", "/api/rooms/**", "/api/bookings/**", "/api/reviews/**",
+                            "/api/test-email").permitAll();
                     req.requestMatchers(org.springframework.http.HttpMethod.POST, "/api/bookings").permitAll();
                     req.requestMatchers(org.springframework.http.HttpMethod.GET, "/api/bookings").permitAll(); // Allow
                                                                                                                // Admin
                                                                                                                // retrieval
-                    req.requestMatchers("/api/auth/**").permitAll();
                     req.requestMatchers("/api/public/**").permitAll();
                     req.requestMatchers("/uploads/**").permitAll();
                     req.requestMatchers("/api/rooms/search/**").permitAll();
