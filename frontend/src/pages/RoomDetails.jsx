@@ -82,6 +82,13 @@ const RoomDetails = () => {
             return;
         }
 
+        // Validate phone number - must be exactly 10 digits
+        const phoneDigits = guestPhone.replace(/\D/g, ''); // Remove non-digits
+        if (phoneDigits.length !== 10) {
+            setBookingError("Phone number must be exactly 10 digits (e.g., 070 123 4567)");
+            return;
+        }
+
         setIsBooking(true);
 
         try {
