@@ -36,7 +36,8 @@ public class BookingController {
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println("!!! BOOKING CRASH !!! " + e.getMessage());
-            return ResponseEntity.internalServerError().body("Error creating booking: " + e.getMessage());
+            return ResponseEntity.internalServerError()
+                    .body(java.util.Collections.singletonMap("message", "Error creating booking: " + e.getMessage()));
         }
     }
 
