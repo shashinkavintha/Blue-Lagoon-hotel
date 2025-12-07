@@ -23,16 +23,21 @@ public class BookingController {
 
     @PostMapping
     // Explicitly allow this endpoint without authentication
-    public ResponseEntity<Booking> createBooking(
-            // @AuthenticationPrincipal User user, // Temporarily disabled for Auth Bypass
-            @RequestBody BookingRequest request) {
-        System.out.println("!!! BOOKING CREATION REQUEST !!! UserID from FE=" + request.getUserId());
-        if (request.getUserId() == null) {
-            System.out.println("!!! WARNING: UserID is NULL in request !!!");
+    public ResponseEntity<?> createBooking(@RequestBody BookingRequest request) {
+        try {
+            System.out.println("!!! BOOKING CREATION REQUEST !!! UserID from FE=" + request.getUserId());
+            if (request.getUserId() == null) {
+                System.out.println("!!! WARNING: UserID is NULL in request !!!");
+                return ResponseEntity.badRequest().body("User ID is required. Please logout and login again.");
+            }
+            Booking booking = bookingService.createBooking(request.getUserId(), request);
+            System.out.println("!!! BOOKING CREATED !!! ID=" + booking.getId());
+            return ResponseEntity.ok(booking);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("!!! BOOKING CRASH !!! " + e.getMessage());
+            return ResponseEntity.internalServerError().body("Error creating booking: " + e.getMessage());
         }
-        Booking booking = bookingService.createBooking(request.getUserId(), request);
-        System.out.println("!!! BOOKING CREATED !!! ID=" + booking.getId());
-        return ResponseEntity.ok(booking);
     }
 
     @GetMapping
